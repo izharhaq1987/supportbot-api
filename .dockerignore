@@ -1,0 +1,44 @@
+I. Objective
+Containerize the FastAPI application so it can run consistently across machines and environments. The image must be small, secure, and production friendly.
+The container must support both Mock Mode and GPT‑4 Mode. No secrets are baked into the image.
+
+II. Preconditions
+I. Project root contains:
+app.py
+langchain_agent.py
+examples/
+requirements.txt
+If missing, run:
+pip install fastapi uvicorn langchain langchain-community python-dotenv openai
+pip freeze > requirements.txt
+II. You are in the project root:
+cd ~/supportbot-api
+III. Create a .dockerignore
+cat > .dockerignore <<'EOF'
+# VCS
+.git
+.gitignore
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Local env and secrets
+.env
+venv/
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Build artifacts
+dist/
+build/
+EOF
+
+
