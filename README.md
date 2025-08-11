@@ -1,5 +1,9 @@
 #  SupportBot API — FastAPI + LangChain
 
+[![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
+
 SupportBot is a lightweight, container-ready API service that handles customer support queries. 
 It can run in two modes:
 
