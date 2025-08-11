@@ -1,97 +1,92 @@
-# SupportBot API (FastAPI + LangChain)
+#  SupportBot API — FastAPI + LangChain
 
-A simple **customer support bot API** built with **FastAPI** and **LangChain**, designed to handle customer queries via GPT-4 or a local **Mock Mode** for development without API costs.
+SupportBot is a lightweight, container-ready API service that handles customer support queries. 
+It can run in two modes:
 
----
+- **Mock Mode** — Returns predefined, realistic responses for common support questions. Ideal for local testing, demos, and development without API costs.
+- **GPT-4 Mode** — Uses OpenAI’s GPT-4 via LangChain to generate live, context-aware responses.
 
-##  Project Overview
+The service is written in Python, adheres to modern best practices, and is structured for maintainability and production deployment.
 
-SupportBot exposes a single `/ask` endpoint. 
-- **GPT-4 Mode**: Uses OpenAI’s GPT-4 via LangChain to generate real responses. 
-- **Mock Mode**: Returns helpful, pre-programmed responses for common intents — no API key required. 
+##  Overview
 
-The project includes:
-- `app.py`: FastAPI API server 
-- `langchain_agent.py`: Bot logic, memory, and mode switching 
-- `examples/`: Ready-to-run JSON and `cURL` examples 
-- `.env` support for easy API key management 
+- **Framework**: [FastAPI](https://fastapi.tiangolo.com/) for HTTP routing and API layer.
+- **LLM Integration**: [LangChain](https://www.langchain.com/) for GPT-4 orchestration and memory handling.
+- **Containerization**: Minimal `Dockerfile` with a non-root runtime user.
+- **Environment Management**: `.env` file support with `python-dotenv`.
+- **Zero-Secret Images**: No API keys stored in the image; runtime injection only.
 
----
+##  Local Setup
 
-##  Setup
-
-###  Create virtual environment
+### I. Create and Activate a Virtual Environment
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-2.  Install dependencies
+
+II. Install Dependencies
 pip install -r requirements.txt
+
 Modes of Operation
 Mock Mode (default)
-Runs without any API key, using deterministic mock replies.
+Runs without any API key. Responses come from deterministic patterns.
 uvicorn app:app --reload
+
 GPT-4 Mode
-Requires an OpenAI API key:
+Requires an OpenAI API key with GPT-4 access.
 
-##  Docker (Build & Run)
-This project can be run locally using Python **or** inside a Docker container.  
-Docker mode works for both **Mock Mode** (no API key) and **GPT-4 Mode** (requires API key).
+1. Create a .env file in the project root:
+OPENAI_API_KEY=sk-your-real-key-here
+2. Start the API:
+uvicorn app:app --reload
 
-### I. Build the Image
-From the project root:
-```bash
+Docker — Build & Run
+SupportBot ships with a production-ready Dockerfile.
+It supports both Mock and GPT-4 modes.
+
+I. Build the Image
 docker build -t supportbot-api:latest .
 
-II. Run in Mock Mode (no API key)
-This will run the bot with pre-programmed responses for common support intents.
+II. Run in Mock Mode
 docker run --rm -p 8000:8000 supportbot-api:latest
 
-III. Run in GPT-4 Mode (requires API key)
-Pass your OpenAI key as an environment variable when starting the container:
+III. Run in GPT-4 Mode
 docker run --rm -p 8000:8000 \
   -e OPENAI_API_KEY=sk-your-real-key \
   supportbot-api:latest
 
 IV. Test the Endpoint
-From another terminal:
 curl -X POST http://127.0.0.1:8000/ask \
      -H "Content-Type: application/json" \
      -d '{"message":"Hi, how can I update my account information?"}'
-Mock Mode sample response:
+
+Mock Mode example response:
 {
   "reply": "(Mock) I hear you: “Hi, how can I update my account information?”. Tell me a bit more and I’ll point you to the right steps."
 }
 
-V. Notes
-If OPENAI_API_KEY is not set, the bot defaults to Mock Mode.
-To change the host port, adjust the mapping: -p 8080:8000.
-The Docker image contains no secrets; always provide keys via -e flags or your orchestrator’s secret manager.
-
-Create .env in the project root:
-OPENAI_API_KEY=sk-your-real-key-here
-Start the server:
-uvicorn app:app --reload
- Example cURL
+ Example Usage (Local or Docker)
 curl -X POST http://127.0.0.1:8000/ask \
      -H "Content-Type: application/json" \
-     -d '{"message":"Hi, how can I update my account information?"}'
-Mock Mode sample response:
-{
-  "reply": "(Mock) I hear you: “Hi, how can I update my account information?”. Tell me a bit more and I’ll point you to the right steps."
-}
- Project Structure
+     -d '{"message":"How do I reset my password?"}'
+
+Project Layout
 supportbot-api/
-├── app.py
-├── langchain_agent.py
+├── app.py               # FastAPI application entry point
+├── langchain_agent.py   # Core bot logic, memory, and mode switching
 ├── examples/
-│   ├── ask_request.json
-│   └── ask_curl.sh
-├── README.md
-├── requirements.txt
-└── .gitignore
-🧾 Requirements
+│   ├── ask_request.json # Sample API request payload
+│   └── ask_curl.sh      # Simple curl test script
+├── Dockerfile           # Container build file
+├── .dockerignore        # Docker build exclusions
+├── .gitignore           # Git exclusions
+├── README.md            # Project documentation
+├── requirements.txt     # Python dependencies
+└── .env (optional)      # API key for GPT-4 mode
 
+Managing Requirements
+If you need to regenerate the dependency list:
 pip install fastapi uvicorn langchain langchain-community python-dotenv openai
 pip freeze > requirements.txt
- License
-MIT License – feel free to use and modify for your needs.
+
+License
+MIT License — You are free to use, modify, and distribute this code, provided that the license notice is included with your copies.
