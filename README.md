@@ -33,6 +33,40 @@ uvicorn app:app --reload
 GPT-4 Mode
 Requires an OpenAI API key:
 
+##  Docker (Build & Run)
+This project can be run locally using Python **or** inside a Docker container.  
+Docker mode works for both **Mock Mode** (no API key) and **GPT-4 Mode** (requires API key).
+
+### I. Build the Image
+From the project root:
+```bash
+docker build -t supportbot-api:latest .
+
+II. Run in Mock Mode (no API key)
+This will run the bot with pre-programmed responses for common support intents.
+docker run --rm -p 8000:8000 supportbot-api:latest
+
+III. Run in GPT-4 Mode (requires API key)
+Pass your OpenAI key as an environment variable when starting the container:
+docker run --rm -p 8000:8000 \
+  -e OPENAI_API_KEY=sk-your-real-key \
+  supportbot-api:latest
+
+IV. Test the Endpoint
+From another terminal:
+curl -X POST http://127.0.0.1:8000/ask \
+     -H "Content-Type: application/json" \
+     -d '{"message":"Hi, how can I update my account information?"}'
+Mock Mode sample response:
+{
+  "reply": "(Mock) I hear you: “Hi, how can I update my account information?”. Tell me a bit more and I’ll point you to the right steps."
+}
+
+V. Notes
+If OPENAI_API_KEY is not set, the bot defaults to Mock Mode.
+To change the host port, adjust the mapping: -p 8080:8000.
+The Docker image contains no secrets; always provide keys via -e flags or your orchestrator’s secret manager.
+
 Create .env in the project root:
 OPENAI_API_KEY=sk-your-real-key-here
 Start the server:
